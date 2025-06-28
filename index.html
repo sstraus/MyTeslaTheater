@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>MyTeslaTheater</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="assets/img/favicon.png">
+  <meta property="og:image" content="assets/img/graph.png">
+  <meta name="theme-color" content="#000">
+  <meta name="description" content="fullscreen entertainment for your tesla" />
+  <meta property="og:description" content="fullscreen entertainment for your tesla" />
+  <meta name="keywords" content="myteslatheatre, tesla, tesla theater" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+    }
+    
+    .app-frame {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #1f1f1f;
+      padding: 10px 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo img {
+      height: 30px;
+      margin-right: 10px;
+    }
+    
+    .logo span {
+      font-size: 20px;
+      font-weight: 500;
+    }
+    
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+      display: flex;
+      gap: 20px;
+    }
+    
+    nav ul li a {
+      color: #0066cc;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 10px; /* Area di tocco più grande */
+    }
+    
+    nav ul li a:hover, nav ul li a.active {
+      color: #4da6ff;
+    }
+    
+    .content {
+      flex: 1;
+      padding: 20px;
+    }
+    
+    footer {
+      background-color: #1f1f1f;
+      padding: 15px 20px;
+      text-align: center;
+      font-size: 14px;
+    }
+    
+    .fullscreen-dialog {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(0,0,0,0.8);
+      z-index: 1000;
+    }
+    
+    .dialog-content {
+      background-color: #1f1f1f;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 400px;
+      text-align: center;
+    }
+    
+    button {
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      padding: 12px 20px; /* Pulsanti più grandi per il touch */
+      border-radius: 4px;
+      margin: 5px;
+      cursor: pointer;
+      font-size: 16px; /* Testo più grande */
+      min-width: 80px; /* Larghezza minima per aree di tocco */
+    }
+    
+    button:hover {
+      background-color: #4da6ff;
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    
+    /* Stili per le impostazioni di personalizzazione */
+    .settings-panel {
+      background-color: #1f1f1f;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    
+    .color-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px; /* Spazio maggiore tra i controlli touch */
+      margin-top: 10px;
+    }
+    
+    .color-option {
+      width: 40px; /* Più grande per il touch */
+      height: 40px; /* Più grande per il touch */
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    
+    .color-option.selected {
+      border-color: white;
+    }
+    
+    .custom-link-form {
+      margin-top: 20px;
+    }
+    
+    .custom-link-form input {
+      padding: 12px; /* Input più grandi per il touch */
+      margin-right: 10px;
+      border-radius: 4px;
+      border: none;
+      width: 100%;
+      margin-bottom: 15px; /* Spazio maggiore tra gli input */
+      background-color: #333;
+      color: white;
+      font-size: 16px; /* Testo più grande */
+    }
+
+    .custom-links-list {
+      margin-top: 20px;
+    }
+
+    .custom-link-item {
+      background-color: #333;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .remove-link-btn {
+      background-color: #cc0000;
+      padding: 8px 12px;
+      min-width: 40px;
+    }
+
+    .remove-link-btn:hover {
+      background-color: #ff0000;
+    }
+    
+    /* Stile per le card */
+    .cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Card leggermente più grandi */
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .card {
+      padding: 20px; /* Padding maggiore per il touch */
+      cursor: pointer;
+    }
+    
+    .card-logo {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+    
+    .card-title {
+      font-size: 18px; /* Testo più grande per il touch */
+      margin-bottom: 10px;
+    }
+
+    .toggle-settings-btn {
+      margin-right: 10px;
+    }
+    
+    .manage-cards-btn {
+      background-color: #424242;
+      color: white;
+    }
+
+    .actions-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    /* Category filter styles */
+    .category-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+    
+    .category-filter-btn {
+      background-color: #333;
+      color: #bbb;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 30px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+    
+    .category-filter-btn.active {
+      background-color: #0066cc;
+      color: white;
+    }
+    
+    .category-filter-btn:hover {
+      opacity: 0.8;
+    }
+    
+    /* JSONBlob feature styles */
+    .jsonblob-section {
+      background-color: #282828;
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 20px;
+    }
+    
+    .jsonblob-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .jsonblob-header h3 {
+      margin: 0 10px 0 0;
+    }
+    
+    .info-icon {
+      width: 20px;
+      height: 20px;
+      background-color: #666;
+      border-radius: 50%;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: help;
+      position: relative;
+    }
+    
+    .info-tooltip {
+      display: none;
+      position: absolute;
+      top: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #444;
+      color: white;
+      padding: 10px;
+      border-radius: 4px;
+      width: 250px;
+      font-size: 12px;
+      z-index: 10;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    
+    .info-icon:hover .info-tooltip {
+      display: block;
+    }
+    
+    .jsonblob-controls {
+      margin-top: 15px;
+    }
+    
+    .jsonblob-controls input {
+      padding: 10px;
+      margin-right: 10px;
+      border-radius: 4px;
+      border: none;
+      width: 60%;
+      background-color: #333;
+      color: white;
+    }
+    
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      color: white;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+      animation: fadeIn 0.3s, fadeOut 0.3s 2.7s;
+    }
+    
+    .notification.success {
+      background-color: #27ae60;
+    }
+    
+    .notification.error {
+      background-color: #e74c3c;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(20px); }
+    }
+
+    /* Filter dialog styles */
+    .filter-section {
+      margin-bottom: 20px;
+    }
+    
+    .filter-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    .filter-option {
+      background-color: #333;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .filter-option.active {
+      background-color: #0066cc;
+    }
+    
+    .filter-option:not(.active) {
+      background-color: #1a1a1a;
+      opacity: 0.7;
+    }
+    
+    /* Category label in bottom right of card */
+    .category-badge {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background-color: rgba(0, 0, 0, 0.75);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 11px;
+      font-weight: bold;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-frame">
+    <header id="toolbar">
+      <div class="logo">
+        <img src="assets/img/favicon.png" alt="MyTeslaTheater logo" id="logo-image" onerror="this.style.display='none'">
+        <span id="app-title">MyTeslaTheater</span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="debug.html">Debug</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="content" id="content">
+      <div id="dash-page">
+        <h1 id="welcome-title">Welcome to MyTeslaTheater</h1>
+        
+        <!-- Category Filters will be inserted here dynamically -->
+        <div id="category-filters" class="category-filters">
+          <!-- Filter buttons will be generated here -->
+        </div>
+        
+        <div class="actions-container">
+          <button id="toggle-settings-btn" class="toggle-settings-btn">Show Customization</button>
+          <div>
+            <button id="filter-cards-btn" class="manage-cards-btn">Filter Content</button>
+            <button id="manage-visibility-btn" class="manage-cards-btn">Manage Cards</button>
+          </div>
+        </div>
+        
+        <div id="settings-panel" class="settings-panel hidden">
+          <h2 id="customization-title">Customization</h2>
+          <h3 id="card-color-title">Card Color</h3>
+          <div class="color-picker" id="card-colors">
+            <div class="color-option selected" style="background-color: #1f1f1f;" data-color="#1f1f1f"></div>
+            <div class="color-option" style="background-color: #003366;" data-color="#003366"></div>
+            <div class="color-option" style="background-color: #330033;" data-color="#330033"></div>
+            <div class="color-option" style="background-color: #333300;" data-color="#333300"></div>
+            <div class="color-option" style="background-color: #2d0922;" data-color="#2d0922"></div>
+          </div>
+          
+          <div class="custom-link-form">
+            <h3 id="add-link-title">Add custom link</h3>
+            <input type="text" id="custom-link-name" placeholder="Site name">
+            <input type="text" id="custom-link-url" placeholder="URL (start with http:// or https://)">
+            <input type="text" id="custom-link-desc" placeholder="Brief description">
+            <input type="text" id="custom-link-logo" placeholder="Logo URL (optional)">
+            <select id="custom-link-category" style="width: 100%; padding: 12px; margin-bottom: 15px; background-color: #333; color: white; border: none; border-radius: 4px; font-size: 16px;">
+              <option value="private">Private (always visible)</option>
+              <option value="paid">Paid Subscription</option>
+              <option value="free">Free Content</option>
+              <option value="social">Social Media</option>
+            </select>
+            <button id="add-custom-link">Add</button>
+          </div>
+          
+          <div id="custom-links-list" class="custom-links-list">
+            <h3 id="saved-links-title">Saved custom links</h3>
+            <div id="custom-links-container">
+              <!-- Custom links will be displayed here -->
+            </div>
+          </div>
+          
+          <!-- JSONBlob Backup Feature -->
+          <div class="jsonblob-section">
+            <div class="jsonblob-header">
+              <h3>Cloud Backup (JSONBlob)</h3>
+              <div class="info-icon">i
+                <div class="info-tooltip">
+                  JSONBlob.com is a public service. Your data is not encrypted and can be accessed by anyone with the ID. 
+                  We don't take responsibility for data privacy or service availability. 
+                  Backups expire after 30 days of inactivity.
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <input type="checkbox" id="enable-jsonblob" style="width: 20px; height: 20px;">
+                <span>Enable cloud backup (add ID to URL for bookmarks)</span>
+              </label>
+            </div>
+            
+            <div id="jsonblob-controls" class="jsonblob-controls hidden">
+              <input type="text" id="jsonblob-id" placeholder="JSONBlob ID">
+              <button id="load-jsonblob" style="background-color: #666;">Load from ID</button>
+              <a id="jsonblob-share-link" href="#" target="_blank" style="color: #0066cc; text-decoration: none; margin-left: 10px;">No data to share yet</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="cards-container" id="cards-container">
+          <!-- Le card verranno generate qui dinamicamente -->
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer">
+      <p>&copy; 2025 MyTeslaTheater. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <div id="fullscreen-dialog" class="fullscreen-dialog hidden">
+    <div class="dialog-content">
+      <h2>Open in Fullscreen?</h2>
+      <p>Click "GO TO SITE" on next page</p>
+      <div>
+        <button id="fullscreen-yes">Yes</button>
+        <button id="fullscreen-no">No</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="manage-cards-dialog" class="fullscreen-dialog hidden">
+    <div class="dialog-content" style="width: 80%; max-width: 600px; max-height: 80vh; overflow-y: auto;">
+      <h2>Manage Cards</h2>
+      <p>Select which cards to show in your dashboard.</p>
+      <div id="card-visibility-container">
+        <!-- Cards will be generated here dynamically -->
+      </div>
+      <div style="margin-top: 20px;">
+        <button id="save-visibility-btn">Save</button>
+        <button id="cancel-visibility-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Filter Content Dialog -->
+  <div id="filter-dialog" class="fullscreen-dialog hidden">
+    <div class="dialog-content" style="width: 80%; max-width: 600px; max-height: 80vh; overflow-y: auto;">
+      <h2>Filter Content</h2>
+      
+      <!-- Category Filters at the top of the modal -->
+      <div class="filter-section">
+        <h3>Content Type</h3>
+        <div class="filter-options category-options">
+          <button class="filter-option active" data-category="paid">💰 Paid</button>
+          <button class="filter-option active" data-category="free">🆓 Free</button>
+          <button class="filter-option active" data-category="social">👥 Social</button>
+        </div>
+      </div>
+      
+      <!-- Country Filters -->
+      <div class="filter-section">
+        <h3>Countries</h3>
+        <div class="filter-options country-options">
+          <button class="filter-option active" data-country="intl">🌐 International</button>
+          <button class="filter-option active" data-country="us">🇺🇸 United States</button>
+          <button class="filter-option active" data-country="uk">🇬🇧 United Kingdom</button>
+          <button class="filter-option active" data-country="de">🇩🇪 Germany</button>
+          <button class="filter-option active" data-country="fr">🇫🇷 France</button>
+          <button class="filter-option active" data-country="it">🇮🇹 Italy</button>
+          <button class="filter-option active" data-country="es">🇪🇸 Spain</button>
+        </div>
+      </div>
+      
+      <div style="margin-top: 20px;">
+        <button id="apply-filters-btn">Apply Filters</button>
+        <button id="reset-filters-btn">Reset All</button>
+        <button id="close-filters-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/utility.js"></script>
+  <script src="js/error-handler.js"></script>
+  <script src="js/globals.js"></script>
+  <script src="js/notification-manager.js"></script>
+  <script src="js/card-data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/lang.js"></script>
+  <script src="js/framework.js"></script>
+  <script src="js/ui-manager.js"></script>
+  <script src="js/settings-manager.js"></script>
+  <script src="js/view-manager.js"></script>
+  <script src="js/card-manager.js"></script>
+  <script src="js/operations.js"></script>
+</body>
+</html>

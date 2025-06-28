@@ -1,0 +1,51 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 12,
+    "sourceType": "script"
+  },
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-redeclare": "error",
+    "no-duplicate-imports": "error",
+    "no-dupe-keys": "error",
+    "no-dupe-class-members": "error",
+    "no-duplicate-case": "error",
+    "no-use-before-define": ["error", { "functions": false, "classes": true, "variables": true }],
+    "no-var": "off",
+    "prefer-const": "off",
+    "no-undef": "warn",
+    "quotes": ["warn", "single", { "avoidEscape": true }],
+    "semi": ["warn", "always"]
+  },
+  "globals": {
+    "defaultCardData": "readonly",
+    "customLinks": "writable",
+    "cardVisibilitySettings": "writable",
+    "selectedCardColor": "writable",
+    "cardOrder": "writable",
+    "categoryFilters": "writable",
+    "getLang": "readonly",
+    "initLanguage": "readonly",
+    "userPreferences": "writable",
+    "loadUserPreferences": "readonly",
+    "saveUserPreferences": "readonly",
+    "generateCards": "readonly",
+    "renderCustomLinksList": "readonly",
+    "updateCardColors": "readonly",
+    "toggleCardVisibility": "readonly",
+    "showCardVisibilityManager": "readonly",
+    "initDragDrop": "readonly",
+    "initVisibilityToggleListeners": "readonly",
+    "animateElement": "readonly",
+    "generateCardElement": "readonly",
+    "isLightColor": "readonly",
+    "setupCategoryFilters": "readonly",
+    "toggleSettingsPanel": "readonly",
+    "addCustomLink": "readonly"
+  }
+}
