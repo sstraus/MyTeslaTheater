@@ -1,0 +1,13 @@
+{
+  "name": "my-tesla-theater",
+  "version": "1.0.0",
+  "description": "Fullscreen entertainment for your Tesla",
+  "main": "index.html",
+  "scripts": {
+    "lint": "eslint js/",
+    "lint:fix": "eslint js/ --fix"
+  },
+  "devDependencies": {
+    "eslint": "^8.40.0"
+  }
+}

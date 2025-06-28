@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Debug - MyTeslaTheater</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="assets/img/favicon.png">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Roboto', sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+    }
+    
+    .app-frame {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #1f1f1f;
+      padding: 10px 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo img {
+      height: 30px;
+      margin-right: 10px;
+    }
+    
+    .logo span {
+      font-size: 20px;
+      font-weight: 500;
+    }
+    
+    nav ul {
+      list-style-type: none;
+      padding: 0;
+      display: flex;
+      gap: 20px;
+    }
+    
+    nav ul li a {
+      color: #0066cc;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 10px; /* Area di tocco più grande */
+    }
+    
+    nav ul li a:hover, nav ul li a.active {
+      color: #4da6ff;
+    }
+    
+    .content {
+      flex: 1;
+      padding: 20px;
+    }
+    
+    footer {
+      background-color: #1f1f1f;
+      padding: 15px 20px;
+      text-align: center;
+      font-size: 14px;
+    }
+    
+    .debug-info {
+      background-color: #1f1f1f;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .debug-row {
+      display: flex;
+      margin-bottom: 10px;
+      flex-wrap: wrap; /* Per schermi piccoli */
+    }
+    
+    .debug-label {
+      font-weight: bold;
+      width: 200px;
+      padding: 8px 0; /* Più grande per il touch */
+    }
+    
+    .debug-value {
+      word-break: break-all;
+      padding: 8px 0; /* Più grande per il touch */
+      flex: 1;
+      min-width: 150px;
+    }
+    
+    .debug-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .debug-button {
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      padding: 12px 20px; /* Più grande per il touch */
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 16px; /* Testo più grande */
+      min-width: 120px; /* Più largo per il touch */
+    }
+    
+    .debug-button:hover {
+      background-color: #4da6ff;
+    }
+    
+    .fullscreen-dialog {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .dialog-content {
+      background: #1f1f1f;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      max-width: 400px;
+    }
+    
+    button {
+      background-color: #0066cc;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      margin: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      min-width: 80px;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    /* Responsiveness per schermi piccoli */
+    @media (max-width: 600px) {
+      .debug-row {
+        flex-direction: column;
+      }
+      
+      .debug-label, .debug-value {
+        width: 100%;
+      }
+      
+      .debug-buttons {
+        flex-direction: column;
+      }
+      
+      .debug-button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-frame">
+    <header id="toolbar">
+      <div class="logo">
+        <img src="assets/img/favicon.png" alt="MyTeslaTheater logo" id="logo-image" onerror="this.style.display='none'">
+        <span id="app-title">MyTeslaTheater</span>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="debug.html" class="active">Debug</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="content" id="content">
+      <div id="debug-page">
+        <h1>Debug Information</h1>
+        
+        <div class="debug-info">
+          <h2>Browser Info</h2>
+          <div class="debug-row">
+            <div class="debug-label">User Agent:</div>
+            <div id="user-agent" class="debug-value"></div>
+          </div>
+          <div class="debug-row">
+            <div class="debug-label">Screen Resolution:</div>
+            <div id="screen-resolution" class="debug-value"></div>
+          </div>
+          <div class="debug-row">
+            <div class="debug-label">Window Size:</div>
+            <div id="window-size" class="debug-value"></div>
+          </div>
+          <div class="debug-row">
+            <div class="debug-label">Touch Support:</div>
+            <div id="touch-support" class="debug-value"></div>
+          </div>
+          <div class="debug-row">
+            <div class="debug-label">Referrer:</div>
+            <div id="referrer" class="debug-value"></div>
+          </div>
+        </div>
+        
+        <div class="debug-info">
+          <h2>Application State</h2>
+          <div class="debug-row">
+            <div class="debug-label">Fullscreen Mode:</div>
+            <div id="fullscreen-mode" class="debug-value">false</div>
+          </div>
+          <div class="debug-row">
+            <div class="debug-label">Current Page:</div>
+            <div id="current-page" class="debug-value">debug.html</div>
+          </div>
+          <div class="debug-row">
+            <div class="debug-label">Loaded Time:</div>
+            <div id="loaded-time" class="debug-value"></div>
+          </div>
+          <div class="debug-row">
+            <div class="debug-label">Card Color:</div>
+            <div id="card-color-value" class="debug-value"></div>
+          </div>
+          <div class="debug-row">
+            <div class="debug-label">Custom Links:</div>
+            <div id="custom-links-count" class="debug-value">0</div>
+          </div>
+        </div>
+        
+        <div class="debug-buttons">
+          <button id="refresh-debug" class="debug-button">Refresh Info</button>
+          <button id="test-fullscreen" class="debug-button">Test Fullscreen</button>
+          <button id="clear-storage" class="debug-button">Clear Storage</button>
+        </div>
+      </div>
+    </main>
+
+    <footer id="footer">
+      <p>&copy; 2025 MyTeslaTheater. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <div id="fullscreen-dialog" class="fullscreen-dialog hidden">
+    <div class="dialog-content">
+      <h2>Open in Fullscreen?</h2>
+      <p>Click "GO TO SITE" on next page</p>
+      <div>
+        <button id="fullscreen-yes">Yes</button>
+        <button id="fullscreen-no">No</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/lang.js"></script>
+  <script src="js/card-data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Impedisci a app.js di mostrare il fullscreen dialog automaticamente, ma lascialo funzionare per i test
+    window.addEventListener('load', function() {
+      // Assicurati che il fullscreen dialog sia nascosto all'avvio
+      const fullscreenDialog = document.getElementById('fullscreen-dialog');
+      if (fullscreenDialog) {
+        fullscreenDialog.classList.add('hidden');
+      }
+      
+      // Sovrascrivi gli event listener per i pulsanti
+      const yesBtn = document.getElementById('fullscreen-yes');
+      const noBtn = document.getElementById('fullscreen-no');
+      
+      if (yesBtn) {
+        // Rimuovi tutti gli event listener esistenti
+        const newYesBtn = yesBtn.cloneNode(true);
+        yesBtn.parentNode.replaceChild(newYesBtn, yesBtn);
+        
+        // Aggiungi il nuovo event listener
+        newYesBtn.addEventListener('click', function() {
+          fullscreenDialog.classList.add('hidden');
+          document.getElementById('fullscreen-mode').textContent = 'true (simulato)';
+        });
+      }
+      
+      if (noBtn) {
+        // Rimuovi tutti gli event listener esistenti
+        const newNoBtn = noBtn.cloneNode(true);
+        noBtn.parentNode.replaceChild(newNoBtn, noBtn);
+        
+        // Aggiungi il nuovo event listener
+        newNoBtn.addEventListener('click', function() {
+          fullscreenDialog.classList.add('hidden');
+        });
+      }
+    });
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      // Popola le informazioni di debug
+      updateDebugInfo();
+      
+      // Gestione dei pulsanti di debug
+      const refreshDebugBtn = document.getElementById('refresh-debug');
+      const testFullscreenBtn = document.getElementById('test-fullscreen');
+      const clearStorageBtn = document.getElementById('clear-storage');
+      
+      refreshDebugBtn.addEventListener('click', updateDebugInfo);
+      // Touch support
+      refreshDebugBtn.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+      });
+      
+      testFullscreenBtn.addEventListener('click', function() {
+        // Mostra il dialog di fullscreen per il test
+        const fullscreenDialog = document.getElementById('fullscreen-dialog');
+        if (fullscreenDialog) {
+          fullscreenDialog.classList.remove('hidden');
+        }
+      });
+      // Touch support
+      testFullscreenBtn.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+      });
+      
+      clearStorageBtn.addEventListener('click', clearLocalStorage);
+      // Touch support
+      clearStorageBtn.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+      });
+    });
+    
+    function updateDebugInfo() {
+      // Browser info
+      document.getElementById('user-agent').textContent = navigator.userAgent;
+      document.getElementById('screen-resolution').textContent = `${screen.width}x${screen.height}`;
+      document.getElementById('window-size').textContent = `${window.innerWidth}x${window.innerHeight}`;
+      document.getElementById('touch-support').textContent = 
+        ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) ? 'Yes' : 'No';
+      document.getElementById('referrer').textContent = document.referrer || 'N/A';
+      
+      // App state
+      document.getElementById('loaded-time').textContent = new Date().toLocaleTimeString();
+      
+      // Personalizzazione
+      const preferences = JSON.parse(localStorage.getItem('myteslatheater_preferences') || '{}');
+      document.getElementById('card-color-value').textContent = preferences.cardColor || '#1f1f1f';
+      
+      const customLinks = preferences.customLinks || [];
+      document.getElementById('custom-links-count').textContent = customLinks.length || 0;
+    }
+    
+    function clearLocalStorage() {
+      localStorage.clear();
+      updateDebugInfo();
+      alert('Local storage cleared! User preferences reset.');
+    }
+  </script>
+</body>
+</html>
