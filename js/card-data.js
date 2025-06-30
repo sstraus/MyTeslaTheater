@@ -31,7 +31,7 @@ window.defaultCardData = [
     id: 'prime-video',
     title: 'Prime Video',
     description: 'Movies, TV shows, and Amazon Originals',
-    url: 'https://www.amazon.com/Amazon-Video/b/?node=2858778011',
+    url: 'https://www.primevideo.com',
     logoUrl: 'assets/logos/prime-video.svg',
     brandColor: '#00A8E1',
     category: 'paid',
@@ -160,17 +160,6 @@ window.defaultCardData = [
     order: 140
   },
   {
-    id: 'freevee',
-    title: 'Freevee',
-    description: 'Free movies and TV shows from Amazon',
-    url: 'https://www.amazon.com/adlp/imdbtv-about',
-    logoUrl: 'assets/logos/freevee.svg',
-    brandColor: '#FFBE00',
-    category: 'free',
-    country: 'intl',
-    order: 150
-  },
-  {
     id: 'roku',
     title: 'Roku Channel',
     description: 'Free movies and TV',
@@ -178,7 +167,7 @@ window.defaultCardData = [
     logoUrl: 'assets/logos/roku.svg',
     brandColor: '#662D91',
     category: 'free',
-    country: 'intl',
+    country: 'us',
     order: 160
   },
   {
